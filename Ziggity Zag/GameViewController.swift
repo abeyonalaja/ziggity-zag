@@ -23,6 +23,8 @@ class GameViewController: UIViewController {
     }
 
     func createScene() {
+        
+        self.view.backgroundColor = UIColor.whiteColor()
         let sceneView = self.view as! SCNView
 
         sceneView.scene = scene
@@ -57,6 +59,13 @@ class GameViewController: UIViewController {
         light.light?.type = SCNLightTypeDirectional
         light.eulerAngles = SCNVector3Make(-45, 45, 0)
         scene.rootNode.addChildNode(light)
+        
+        // Create light
+        let light2 = SCNNode()
+        light2.light = SCNLight()
+        light2.light?.type = SCNLightTypeDirectional
+        light2.eulerAngles = SCNVector3Make(45, 45, 0)
+        scene.rootNode.addChildNode(light2)
     }
     
     
