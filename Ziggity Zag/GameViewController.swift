@@ -17,6 +17,8 @@ class GameViewController: UIViewController {
     
     let firstBox = SCNNode()
     
+    var person = SCNNode()
+    
     override func viewDidLoad(){
 //        super.viewDidLoad()
         self.createScene()
@@ -28,6 +30,15 @@ class GameViewController: UIViewController {
         let sceneView = self.view as! SCNView
 
         sceneView.scene = scene
+        
+        // Create Person
+        let personGeo = SCNSphere(radius: 0.2)
+        person = SCNNode(geometry: personGeo)
+        let personMaterial  = SCNMaterial()
+        personMaterial.diffuse.contents = UIColor.greenColor()
+        personGeo.materials = [personMaterial]
+        person.position = SCNVector3Make(0, 1.1, 0)
+        scene.rootNode.addChildNode(person)
 
         // create Camera
         cameraNode.camera = SCNCamera()
