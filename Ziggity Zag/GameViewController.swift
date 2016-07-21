@@ -17,11 +17,28 @@ class GameViewController: UIViewController {
     
     let firstBox = SCNNode()
     
+    var goingLeft = Bool();
+    
     var person = SCNNode()
+    
+    
     
     override func viewDidLoad(){
 //        super.viewDidLoad()
         self.createScene()
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        
+        if goingLeft == false {
+            person.removeAllActions()
+            person.runAction(SCNAction.repeatActionForever(SCNAction.moveBy(SCNVector3Make(-100, 0, 0), duration: 20)))
+            goingLeft = true
+        } else {
+            person.removeAllActions()
+            person.runAction(SCNAction.repeatActionForever(SCNAction.moveBy(SCNVector3Make(0, 0, -100), duration: 20)))
+            goingLeft = false
+        }
     }
 
     func createScene() {
