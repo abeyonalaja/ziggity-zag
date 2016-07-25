@@ -10,7 +10,7 @@ import UIKit
 import QuartzCore
 import SceneKit
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, SCNSceneRendererDelegate {
 
     let scene = SCNScene()
     let cameraNode = SCNNode();
@@ -23,6 +23,8 @@ class GameViewController: UIViewController {
     
     var tempBox = SCNNode();
     
+    var prevBoxNumber = Int();
+    
     var boxNumber = Int()
     
     
@@ -30,6 +32,19 @@ class GameViewController: UIViewController {
 //        super.viewDidLoad()
         self.createScene()
     }
+    
+    func renderer(renderer: SCNSceneRenderer, updateAtTime time: NSTimeInterval) {
+        
+        let deleteBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber)", recursively: true)
+        
+        if deleteBox?.position.x > person.position.x + 1 || deleteBox?.position.z > person.position.z + 1 {
+            prevBoxNumber += 1
+            
+            deleteBox?.removeFromParentNode()
+            createBox()
+        }
+    }
+    
     
     func createBox() {
         tempBox = SCNNode(geometry: firstBox.geometry)
@@ -42,7 +57,7 @@ class GameViewController: UIViewController {
         case 0:
             tempBox.position =  SCNVector3Make((prevBox?.position.x)! - firstBox.scale.x, (prevBox?.position.y)!, (prevBox?.position.z)!)
             break
-        case 0:
+        case 1:
             tempBox.position =  SCNVector3Make((prevBox?.position.x)! , (prevBox?.position.y)!, (prevBox?.position.z)! - firstBox.scale.z)
         default:
             break
@@ -52,7 +67,7 @@ class GameViewController: UIViewController {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        createBox()
+        
         if goingLeft == false {
             person.removeAllActions()
             person.runAction(SCNAction.repeatActionForever(SCNAction.moveBy(SCNVector3Make(-100, 0, 0), duration: 20)))
@@ -67,10 +82,16 @@ class GameViewController: UIViewController {
     func createScene() {
         
         boxNumber = 0;
+        prevBoxNumber = 0;
+        
+        
+        
+        
         self.view.backgroundColor = UIColor.whiteColor()
         let sceneView = self.view as! SCNView
 
         sceneView.scene = scene
+        sceneView.delegate = self
         
         // Create Person
         let personGeo = SCNSphere(radius: 0.2)
@@ -104,6 +125,10 @@ class GameViewController: UIViewController {
         firstBox.position = SCNVector3Make(0, 0, 0)
         scene.rootNode.addChildNode(firstBox)
         firstBox.name = "\(boxNumber)"
+        
+        for _ in 0...6 {
+            createBox()
+        }
         
         // Create light
         let light = SCNNode()
