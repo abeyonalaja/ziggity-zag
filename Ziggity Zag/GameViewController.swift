@@ -21,6 +21,9 @@ class GameViewController: UIViewController {
     
     var person = SCNNode()
     
+    var tempBox = SCNNode();
+    
+    var boxNumber = Int()
     
     
     override func viewDidLoad(){
@@ -28,8 +31,28 @@ class GameViewController: UIViewController {
         self.createScene()
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    func createBox() {
+        tempBox = SCNNode(geometry: firstBox.geometry)
+        let prevBox = scene.rootNode.childNodeWithName("\(boxNumber)", recursively: true)
+        boxNumber = boxNumber + 1
+        tempBox.name = "\(boxNumber)"
+        let randomNumber = arc4random() % 2
         
+        switch randomNumber {
+        case 0:
+            tempBox.position =  SCNVector3Make((prevBox?.position.x)! - firstBox.scale.x, (prevBox?.position.y)!, (prevBox?.position.z)!)
+            break
+        case 0:
+            tempBox.position =  SCNVector3Make((prevBox?.position.x)! , (prevBox?.position.y)!, (prevBox?.position.z)! - firstBox.scale.z)
+        default:
+            break
+        }
+        
+        self.scene.rootNode.addChildNode(tempBox)
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        createBox()
         if goingLeft == false {
             person.removeAllActions()
             person.runAction(SCNAction.repeatActionForever(SCNAction.moveBy(SCNVector3Make(-100, 0, 0), duration: 20)))
@@ -40,9 +63,10 @@ class GameViewController: UIViewController {
             goingLeft = false
         }
     }
-
+    
     func createScene() {
         
+        boxNumber = 0;
         self.view.backgroundColor = UIColor.whiteColor()
         let sceneView = self.view as! SCNView
 
@@ -63,7 +87,7 @@ class GameViewController: UIViewController {
         cameraNode.camera?.orthographicScale = 3
         cameraNode.position = SCNVector3Make(20, 20, 20)
         cameraNode.eulerAngles = SCNVector3Make(-45, 45, 0)
-        let constraint = SCNLookAtConstraint(target: firstBox)
+        let constraint = SCNLookAtConstraint(target: person)
         constraint.gimbalLockEnabled = true
         self.cameraNode.constraints = [constraint]
         scene.rootNode.addChildNode(cameraNode);
@@ -78,8 +102,8 @@ class GameViewController: UIViewController {
         
         firstBoxGeo.materials = [boxMaterial]
         firstBox.position = SCNVector3Make(0, 0, 0)
-        
         scene.rootNode.addChildNode(firstBox)
+        firstBox.name = "\(boxNumber)"
         
         // Create light
         let light = SCNNode()
