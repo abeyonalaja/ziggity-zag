@@ -37,12 +37,37 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
         
         let deleteBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber)", recursively: true)
         
+        let currentBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber + 1)", recursively: true)
+        
         if deleteBox?.position.x > person.position.x + 1 || deleteBox?.position.z > person.position.z + 1 {
             prevBoxNumber += 1
             
             deleteBox?.removeFromParentNode()
             createBox()
         }
+        
+        if person.position.x > (currentBox?.position.x)! - 0.5 && person.position.x < (currentBox?.position.x)! + 0.5 || person.position.z > (currentBox?.position.z)! - 0.5 && person.position.z < (currentBox?.position.z)! + 0.5{
+            
+        } else {
+            die()
+        }
+    }
+    
+    func die(){
+        person.runAction(SCNAction.moveTo(SCNVector3Make(person.position.x, person.position.y - 10, person.position.z), duration: 1.0))
+        
+        let wait = SCNAction.waitForDuration(1.0)
+        let sequence = SCNAction.sequence([wait, SCNAction.runBlock({
+            node in
+            
+            self.scene.rootNode.enumerateChildNodesUsingBlock({ node, stop in
+                
+                node.removeFromParentNode()
+            })
+        }), SCNAction.runBlock({
+            node in
+            self.createScene()
+        })])
     }
     
     
