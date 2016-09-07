@@ -15,6 +15,7 @@
 		4B6D087F1D345457006863D7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B6D087D1D345457006863D7 /* LaunchScreen.storyboard */; };
 		4B6D088A1D345457006863D7 /* Ziggity_ZagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6D08891D345457006863D7 /* Ziggity_ZagTests.swift */; };
 		4B6D08951D345457006863D7 /* Ziggity_ZagUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6D08941D345457006863D7 /* Ziggity_ZagUITests.swift */; };
+		4BFDDD371D80CBDF003FC66A /* coin.dae in Resources */ = {isa = PBXBuildFile; fileRef = 4BFDDD361D80CBDF003FC66A /* coin.dae */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		4B6D08901D345457006863D7 /* Ziggity ZagUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ziggity ZagUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B6D08941D345457006863D7 /* Ziggity_ZagUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ziggity_ZagUITests.swift; sourceTree = "<group>"; };
 		4B6D08961D345457006863D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4BFDDD361D80CBDF003FC66A /* coin.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = coin.dae; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		4B6D08711D345457006863D7 /* Ziggity Zag */ = {
 			isa = PBXGroup;
 			children = (
+				4BFDDD361D80CBDF003FC66A /* coin.dae */,
 				4B6D08721D345457006863D7 /* AppDelegate.swift */,
 				4B6D08741D345457006863D7 /* art.scnassets */,
 				4B6D08761D345457006863D7 /* GameViewController.swift */,
@@ -236,6 +239,7 @@
 				4B6D087F1D345457006863D7 /* LaunchScreen.storyboard in Resources */,
 				4B6D087C1D345457006863D7 /* Assets.xcassets in Resources */,
 				4B6D087A1D345457006863D7 /* Main.storyboard in Resources */,
+				4BFDDD371D80CBDF003FC66A /* coin.dae in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,6 +494,7 @@
 				4B6D089B1D345457006863D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4B6D089C1D345457006863D7 /* Build configuration list for PBXNativeTarget "Ziggity ZagTests" */ = {
 			isa = XCConfigurationList;
@@ -498,6 +503,7 @@
 				4B6D089E1D345457006863D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4B6D089F1D345457006863D7 /* Build configuration list for PBXNativeTarget "Ziggity ZagUITests" */ = {
 			isa = XCConfigurationList;
@@ -506,6 +512,7 @@
 				4B6D08A11D345457006863D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
