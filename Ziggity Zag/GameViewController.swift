@@ -35,6 +35,17 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
         self.createScene()
     }
     
+    func fadeIn(node: SCNNode){
+        node.opacity = 0;
+        node.runAction(SCNAction.fadeInWithDuration(0.5))
+    }
+    
+    func fadeOut(node: SCNNode) {
+        let move = SCNAction.moveTo(SCNVector3Make(node.position.x, node.position.y - 2, node.position.z), duration: 0.5)
+        node.runAction(move)
+        node.runAction(SCNAction.fadeOutWithDuration(0.5));
+    }
+    
     func renderer(renderer: SCNSceneRenderer, updateAtTime time: NSTimeInterval) {
         
         let deleteBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber)", recursively: true)
