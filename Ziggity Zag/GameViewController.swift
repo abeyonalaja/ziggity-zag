@@ -10,7 +10,12 @@ import UIKit
 import QuartzCore
 import SceneKit
 
-class GameViewController: UIViewController, SCNSceneRendererDelegate {
+struct bodyNames{
+    static let Person = 0x1 << 1
+    static let Coin = 0x1 << 2
+}
+
+class GameViewController: UIViewController, SCNSceneRendererDelegate, SCNPhysicsContactDelegate {
 
     let scene = SCNScene()
     let cameraNode = SCNNode();
@@ -29,15 +34,65 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     
     var firstOne = Bool()
     
+    var highScore = Int()
+    
+    var score = Int()
+    
     
     override func viewDidLoad(){
 //        super.viewDidLoad()
         self.createScene()
+        scene.physicsWorld.contactDelegate = self
+    }
+    
+    func physicsWorld(world: SCNPhysicsWorld, didBeginContact contact: SCNPhysicsContact) {
+        
+        let nodeA = contact.nodeA
+        let nodeB = contact.nodeB
+        
+        if nodeA.physicsBody?.categoryBitMask == bodyNames.Coin && nodeB.physicsBody?.categoryBitMask == bodyNames.Person {
+            
+            addScore()
+            nodeA.removeFromParentNode()
+        } else if nodeA.physicsBody?.categoryBitMask == bodyNames.Person && nodeB.physicsBody?.categoryBitMask == bodyNames.Coin {
+            
+            addScore()
+            nodeB.removeFromParentNode()
+        }
+    }
+    
+    func addScore(){
+        score += 1
+        print(score)
     }
     
     func fadeIn(node: SCNNode){
         node.opacity = 0;
         node.runAction(SCNAction.fadeInWithDuration(0.5))
+    }
+    
+    
+    func createCoin(box : SCNNode){
+        
+        let spin = SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3Make(0, 0.5, 0), duration: 0.5)
+        let randomNumber = arc4random() % 8
+        if randomNumber == 3{
+            let coinScene = SCNScene(named: "coin.dae")
+            let coin = coinScene?.rootNode.childNodeWithName("Coin", recursively: true)
+            coin?.position = SCNVector3Make(box.position.x, box.position.y + 1, box.position.z)
+            coin?.scale = SCNVector3Make(0.2, 0.2, 0.2)
+            
+            
+            coin?.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.Dynamic, shape: SCNPhysicsShape(node: coin!, options: nil))
+            coin?.physicsBody?.categoryBitMask = bodyNames.Coin
+            coin?.physicsBody?.contactTestBitMask = bodyNames.Person
+            coin?.physicsBody?.collisionBitMask = bodyNames.Person
+            coin?.physicsBody?.affectedByGravity = false;
+            
+            scene.rootNode.addChildNode(coin!)
+            coin?.runAction(SCNAction.repeatActionForever(spin))
+            fadeIn(coin!)
+        }
     }
     
     func fadeOut(node: SCNNode) {
@@ -55,7 +110,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
         if deleteBox?.position.x > person.position.x + 1 || deleteBox?.position.z > person.position.z + 1 {
             prevBoxNumber += 1
             
-            deleteBox?.removeFromParentNode()
+            fadeOut(deleteBox!)
             createBox()
         }
         
@@ -113,6 +168,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
         }
         
         self.scene.rootNode.addChildNode(tempBox)
+        createCoin(tempBox)
+        fadeIn(tempBox)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -149,6 +206,15 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
         personMaterial.diffuse.contents = UIColor.greenColor()
         personGeo.materials = [personMaterial]
         person.position = SCNVector3Make(0, 1.1, 0)
+        
+        person.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.Static, shape: SCNPhysicsShape(node: person, options: nil))
+        
+        person.physicsBody?.categoryBitMask = bodyNames.Person
+        person.physicsBody?.collisionBitMask = bodyNames.Coin
+        person.physicsBody?.contactTestBitMask = bodyNames.Coin
+        person.physicsBody?.affectedByGravity = false
+        
+        
         scene.rootNode.addChildNode(person)
 
         // create Camera
