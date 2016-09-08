@@ -38,6 +38,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SCNPhysics
     
     var score = Int()
     
+    var dead = Bool()
+    
     
     override func viewDidLoad(){
 //        super.viewDidLoad()
@@ -74,6 +76,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SCNPhysics
     
     func createCoin(box : SCNNode){
         
+        scene.physicsWorld.gravity = SCNVector3Make(0, 0, 0)
+        
         let spin = SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3Make(0, 0.5, 0), duration: 0.5)
         let randomNumber = arc4random() % 8
         if randomNumber == 3{
@@ -102,29 +106,32 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SCNPhysics
     }
     
     func renderer(renderer: SCNSceneRenderer, updateAtTime time: NSTimeInterval) {
+        if dead == false {
+            let deleteBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber)", recursively: true)
         
-        let deleteBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber)", recursively: true)
+            let currentBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber + 1)", recursively: true)
         
-        let currentBox = self.scene.rootNode.childNodeWithName("\(prevBoxNumber + 1)", recursively: true)
-        
-        if deleteBox?.position.x > person.position.x + 1 || deleteBox?.position.z > person.position.z + 1 {
-            prevBoxNumber += 1
+            if deleteBox?.position.x > person.position.x + 1 || deleteBox?.position.z > person.position.z + 1 {
+                prevBoxNumber += 1
             
-            fadeOut(deleteBox!)
-            createBox()
-        }
+                fadeOut(deleteBox!)
+                createBox()
+            }
         
-        if person.position.x > (currentBox?.position.x)! - 0.5 && person.position.x < (currentBox?.position.x)! + 0.5 || person.position.z > (currentBox?.position.z)! - 0.5 && person.position.z < (currentBox?.position.z)! + 0.5{
+            if person.position.x > currentBox!.position.x - 0.5 && person.position.x < currentBox!.position.x + 0.5 || person.position.z > currentBox!.position.z - 0.5 && person.position.z < currentBox!.position.z + 0.5{
             
-        } else {
-            die()
+            } else {
+                die()
+                print("Dead")
+                dead = true
+            }
         }
     }
     
     func die(){
         person.runAction(SCNAction.moveTo(SCNVector3Make(person.position.x, person.position.y - 10, person.position.z), duration: 1.0))
         
-        let wait = SCNAction.waitForDuration(1.0)
+        let wait = SCNAction.waitForDuration(0.5)
         let sequence = SCNAction.sequence([wait, SCNAction.runBlock({
             node in
             
@@ -134,8 +141,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SCNPhysics
             })
         }), SCNAction.runBlock({
             node in
+            print("HI")
             self.createScene()
         })])
+        
+        person.runAction(sequence)
     }
     
     
@@ -190,6 +200,9 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SCNPhysics
         boxNumber = 0;
         prevBoxNumber = 0;
         firstOne = true
+        dead = false
+        
+        scene.physicsWorld.gravity = SCNVector3Make(0, 0, 0)
         
         
         
